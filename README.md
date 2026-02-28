@@ -6,10 +6,10 @@ GNOME Shell 扩展 - 在应用菜单中直接管理 .desktop 文件
 
 右键点击应用图标时，会显示以下选项：
 
-1. **Edit Entry** - 使用系统默认编辑器或自定义命令编辑 .desktop 文件
+1. **Edit Entry** - 使用系统默认编辑器编辑 .desktop 文件
 2. **Open Entry Location** - 在文件管理器中打开 .desktop 文件所在位置
 3. **Properties** - 查看应用属性（包括文件位置、描述、命令等）
-4. **Remove from system** - 删除 .desktop 文件（仅支持用户安装的应用）
+4. **Remove from system** - 删除或隐藏 .desktop 条目
 
 ## 安装
 
@@ -34,10 +34,10 @@ GNOME Shell 扩展 - 在应用菜单中直接管理 .desktop 文件
 3. 右键点击任意应用图标
 4. 从上下文菜单中选择操作
 
-## 删除限制
+## 删除行为
 
-- 只能删除用户安装的应用（`~/.local/share/applications/`）
-- 无法删除系统级应用（`/usr/share/applications/`）
+- 用户目录应用（`~/.local/share/applications/`）：直接删除 `.desktop`
+- 系统目录应用（如 `/usr/share/applications/`）：自动在用户目录创建同名覆盖条目并设置 `Hidden=true`，从当前用户菜单中隐藏
 
 ## 文件位置
 

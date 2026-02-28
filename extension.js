@@ -145,6 +145,24 @@ export default class DesktopFileManagerExtension extends Extension {
         return appInfo.filename ?? null;
     }
 
+    _getDesktopId(appInfo, filename) {
+        let id = null;
+
+        if (typeof appInfo?.get_id === 'function')
+            id = appInfo.get_id();
+
+        if (!id && filename)
+            id = GLib.path_get_basename(filename);
+
+        if (!id)
+            return null;
+
+        if (!id.endsWith('.desktop'))
+            id = `${id}.desktop`;
+
+        return id;
+    }
+
     _readDesktopEntry(filename) {
         if (!filename) {
             return null;
@@ -464,8 +482,18 @@ export default class DesktopFileManagerExtension extends Extension {
 
         } catch (e) {
             if (this._isPermissionDeniedError(e)) {
+                const maskedPath = this._maskDesktopEntryForCurrentUser(appInfo, filename);
+                if (maskedPath) {
+                    this._showNotification(
+                        _('System desktop entry was hidden for the current user.'),
+                        'dialog-information'
+                    );
+                    this._refreshApplicationsMenu();
+                    return;
+                }
+
                 this._showNotification(
-                    _('Permission denied. Please remove this desktop entry with an administrator-capable file manager.'),
+                    _('Permission denied and failed to create a user override.'),
                     'dialog-error'
                 );
                 return;
@@ -475,6 +503,46 @@ export default class DesktopFileManagerExtension extends Extension {
                 `${_('Failed to delete desktop file:')} ${e.message}`,
                 'dialog-error'
             );
+        }
+    }
+
+    _maskDesktopEntryForCurrentUser(appInfo, filename) {
+        try {
+            const desktopId = this._getDesktopId(appInfo, filename);
+            if (!desktopId) {
+                return null;
+            }
+
+            const userApplicationsDir = GLib.build_filenamev([
+                GLib.get_user_data_dir(),
+                'applications',
+            ]);
+            GLib.mkdir_with_parents(userApplicationsDir, 0o755);
+
+            const overridePath = GLib.build_filenamev([userApplicationsDir, desktopId]);
+            const appNameRaw = appInfo?.get_name?.() ?? desktopId;
+            const appName = appNameRaw.replaceAll('\n', ' ').replaceAll('\r', ' ');
+            const contents =
+`[Desktop Entry]
+Type=Application
+Name=${appName}
+Hidden=true
+NoDisplay=true
+`;
+
+            const overrideFile = Gio.File.new_for_path(overridePath);
+            overrideFile.replace_contents(
+                contents,
+                null,
+                false,
+                Gio.FileCreateFlags.REPLACE_DESTINATION,
+                null
+            );
+
+            return overridePath;
+        } catch (e) {
+            console.warn(`${this.metadata.name}: failed to create desktop override: ${e.message}`);
+            return null;
         }
     }
 
