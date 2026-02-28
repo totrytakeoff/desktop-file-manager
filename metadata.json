@@ -1,0 +1,10 @@
+{
+  "name": "Desktop File Manager",
+  "description": "Manage desktop files directly from the app menu: delete files, view properties, edit and open file location.",
+  "uuid": "desktopfilemanager@totrytakeoff",
+  "shell-version": ["45", "46", "47", "48", "49"],
+  "url": "https://github.com/totrytakeoff/desktop-file-manager",
+  "version": 1,
+  "author": "myself",
+  "settings-schema": "org.gnome.shell.extensions.desktopfilemanager"
+}

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema path="/org/gnome/shell/extensions/desktopfilemanager/" id="org.gnome.shell.extensions.desktopfilemanager">
+    <key name="hide-edit-menu-item" type="b">
+      <default>false</default>
+      <summary>Hide Edit Entry menu item</summary>
+      <description>Whether to hide the Edit Entry menu item from the context menu</description>
+    </key>
+    <key name="hide-open-location-menu-item" type="b">
+      <default>false</default>
+      <summary>Hide Open Entry Location menu item</summary>
+      <description>Whether to hide the Open Entry Location menu item from the context menu</description>
+    </key>
+    <key name="hide-properties-menu-item" type="b">
+      <default>false</default>
+      <summary>Hide Properties menu item</summary>
+      <description>Whether to hide the Properties menu item from the context menu</description>
+    </key>
+    <key name="hide-delete-menu-item" type="b">
+      <default>false</default>
+      <summary>Hide Delete menu item</summary>
+      <description>Whether to hide the Delete menu item from the context menu</description>
+    </key>
+  </schema>
+</schemalist>
